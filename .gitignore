@@ -13,3 +13,4 @@ target/
 bin/
 out/
 eclipse_plugin/lib/
+idea_plugin/.gradle

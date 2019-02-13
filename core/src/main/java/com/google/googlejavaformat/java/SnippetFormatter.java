@@ -56,16 +56,25 @@ public class SnippetFormatter {
     }
   }
 
-  private static final int INDENTATION_SIZE = 2;
-  private final Formatter formatter = new Formatter();
+  private static final int SPACES_PER_INDENT_LEVEL = 2;
+  private final Formatter formatter;
   private static final CharMatcher NOT_WHITESPACE = CharMatcher.whitespace().negate();
+
+  public SnippetFormatter() {
+    this(JavaFormatterOptions.defaultOptions());
+  }
+
+  public SnippetFormatter(JavaFormatterOptions options) {
+    Preconditions.checkNotNull(options);
+    this.formatter = new Formatter(options);
+  }
 
   public String createIndentationString(int indentationLevel) {
     Preconditions.checkArgument(
         indentationLevel >= 0,
         "Indentation level cannot be less than zero. Given: %s",
         indentationLevel);
-    int spaces = indentationLevel * INDENTATION_SIZE;
+    int spaces = indentationLevel * indentationSize();
     StringBuilder buf = new StringBuilder(spaces);
     for (int i = 0; i < spaces; i++) {
       buf.append(' ');
@@ -214,5 +223,9 @@ public class SnippetFormatter {
       default:
         throw new IllegalArgumentException("Unknown snippet kind: " + kind);
     }
+  }
+
+  private int indentationSize() {
+    return SPACES_PER_INDENT_LEVEL * formatter.options().indentationMultiplier();
   }
 }
